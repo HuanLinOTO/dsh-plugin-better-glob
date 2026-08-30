@@ -1,0 +1,14 @@
+# better-glob bundle layer: inserts the better-glob plugin row.
+# Loaded by `dsh plugin --profile <name> add @huanlin/dsh-plugin-better-glob`.
+# The `name` is the package entry; Loader resolves it from profile node_modules.
+#
+# No built-in rows are disabled: the plugin shadows the built-in `glob` tool
+# (and its `tool:glob` prompt section) per agent through agent-scope
+# registration, which beats both the host-plane row (headless) and the
+# preset-mounted row (web) by scope-layer precedence. `grep` is untouched.
+# Plugin defaults (excludeDirs, caps) live in the plugin's Config schema;
+# override them here when a deployment needs different values.
+- insert:
+    - id: better-glob
+      name: '@huanlin/dsh-plugin-better-glob'
+      config: {}
