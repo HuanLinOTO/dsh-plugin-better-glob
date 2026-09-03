@@ -57,9 +57,12 @@ export type { BetterGlobCaps } from './caps.ts';
  * the built-in text; the section text names the configured exclusions and
  * the include whitelist escape hatch.
  * @param caps - the deployment's resolved caps.
+ * @param order - the section order for `tool:glob` (resolve via
+ *   `ctx.systemPrompt.getSectionOrder('TOOL_GLOB')` so the shadow stays
+ *   aligned with the built-in registration).
  * @returns the section to register through `agent.ctx.systemPrompt`.
  */
-export declare function shadowSection(caps: BetterGlobCaps): PromptSection;
+export declare function shadowSection(caps: BetterGlobCaps, order: number): PromptSection;
 /**
  * Register the better-`glob` shadow: a `agent/session-start` listener that
  * mounts the tool and prompt section into every agent's own layer, plus a

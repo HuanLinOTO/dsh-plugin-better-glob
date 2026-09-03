@@ -36,7 +36,6 @@
 import type { Context } from '@deepseek-ai/cordis'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import type { PromptSection } from '@deepseek-ai/dsh-system-prompt'
-import { FIRST_PARTY_SECTION_ORDER } from '@deepseek-ai/dsh-system-prompt'
 import type { ToolDefinition } from '@deepseek-ai/dsh-tools'
 import type { BetterGlobCaps, BetterGlobConfig } from './caps.ts'
 import { resolveConfig } from './caps.ts'
@@ -67,15 +66,18 @@ export type { BetterGlobCaps } from './caps.ts'
  * the built-in text; the section text names the configured exclusions and
  * the include whitelist escape hatch.
  * @param caps - the deployment's resolved caps.
+ * @param order - the section order for `tool:glob` (resolve via
+ *   `ctx.systemPrompt.getSectionOrder('TOOL_GLOB')` so the shadow stays
+ *   aligned with the built-in registration).
  * @returns the section to register through `agent.ctx.systemPrompt`.
  */
-export function shadowSection(caps: BetterGlobCaps): PromptSection {
+export function shadowSection(caps: BetterGlobCaps, order: number): PromptSection {
   const excluded = caps.excludeDirs.length > 0
     ? `Bottomless directories (${caps.excludeDirs.join(', ')}) are excluded automatically — pass include (for example ["node_modules/**"]) when a search must look inside one.`
     : 'No directories are excluded by configuration.'
   return {
     name: 'tool:glob',
-    order: FIRST_PARTY_SECTION_ORDER.TOOL_GLOB,
+    order,
     text: 'Use the glob tool — not shell find — to discover files by path pattern. A pattern with no "/" matches basenames at any depth, so "*" matches every file in the tree rather than its top level. '
       + 'Results are files only, never directories, and include hidden and ignored files. '
       + excluded
@@ -111,7 +113,7 @@ const shadowed = new WeakMap<Agent, () => void>()
 export function apply(ctx: Context, config: BetterGlobConfig): void {
   const caps = resolveConfig(config)
   const tool = defineBetterGlobTool(ctx, caps)
-  const section = shadowSection(caps)
+  const section = shadowSection(caps, ctx.systemPrompt.getSectionOrder('TOOL_GLOB'))
 
   const shadow = (agent: Agent): void => {
     if (shadowed.has(agent)) return
