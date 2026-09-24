@@ -5,7 +5,7 @@
  * @module @huanlin/dsh-plugin-better-glob/caps
  */
 
-import z from 'schemastery'
+import z from '@deepseek-ai/schemastery'
 import { DEFAULT_EXCLUDE_DIRS } from './argv.ts'
 
 /** Plugin config; every field has a default. */

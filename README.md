@@ -9,8 +9,8 @@
 ## 为什么是 per-agent 阴影
 
 - 工具注册表按 scope 分层解析：**agent 自己层的注册遮蔽一切继承层**（headless 的全局层、web profile 里 preset 挂载的 standing scope 层）。
-- 全局注册在 web profile 下会输给 preset 挂载；bundle patch 够不到 preset 文件。所以唯一全覆盖的机制是监听 `agent/session-start`，把同名工具经 `agent.ctx` 注册进 agent 自己的层 —— 同时注册同名 `tool:glob` 提示词 section（同 order）遮蔽内置文案。
-- `startup`/`resume`/`clear`/`compact` 都会触发 session-start，WeakSet 保证幂等；插件配置热重载时对存活 agent 做dispose-再注册的 resync。
+- 全局注册在 web profile 下会输给 preset 挂载；bundle patch 够不到 preset 文件。所以唯一全覆盖的机制是监听 `agent/created`，把同名工具经 `agent.ctx` 注册进 agent 自己的层 —— 同时注册同名 `tool:glob` 提示词 section（同 order）遮蔽内置文案。
+- `startup`/`resume`/`clear`/`compact` 都会触发 `agent/created`（`payload.source` 区分），WeakMap 保证幂等；插件配置热重载时对存活 agent 做 dispose-再注册的 resync。
 
 ## 工具行为
 

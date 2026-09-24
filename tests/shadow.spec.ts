@@ -48,13 +48,13 @@ function installBase(ctx: Context): void {
 }
 
 describe('better-glob shadow (real ToolRuntime composition)', () => {
-  it('shadows the built-in glob for an agent after session-start, leaving the global view intact', async () => {
+  it('shadows the built-in glob for an agent after agent/created, leaving the global view intact', async () => {
     const ctx = await mount()
     installBase(ctx)
     ctx.provide('agents', { list: () => [] })
     apply(ctx, {})
     const { scope, key } = await mintAgentScope(ctx, 'a')
-    ctx.emit('agent/session-start', { agent: key, source: 'startup' })
+    ctx.emit('agent/created', { agent: key, source: 'startup' })
 
     expect(ctx.tools.get('glob', key)?.description).toContain('include')
     expect(ctx.tools.get('glob', key)?.description).not.toBe('built-in glob')
@@ -77,7 +77,7 @@ describe('better-glob shadow (real ToolRuntime composition)', () => {
     apply(ctx, {})
     const { scope, key } = await mintAgentScope(ctx, 'started')
     const other = await mintAgentScope(ctx, 'other')
-    ctx.emit('agent/session-start', { agent: key, source: 'startup' })
+    ctx.emit('agent/created', { agent: key, source: 'startup' })
 
     expect(ctx.tools.get('glob', key)?.description).toContain('include')
     expect(ctx.tools.get('glob', other.key)?.description).toBe('built-in glob')
@@ -85,15 +85,15 @@ describe('better-glob shadow (real ToolRuntime composition)', () => {
     await other.scope.dispose()
   })
 
-  it('re-firing session-start stays idempotent', async () => {
+  it('re-firing agent/created stays idempotent', async () => {
     const ctx = await mount()
     installBase(ctx)
     ctx.provide('agents', { list: () => [] })
     apply(ctx, {})
     const { scope, key } = await mintAgentScope(ctx, 'a')
-    ctx.emit('agent/session-start', { agent: key, source: 'startup' })
-    ctx.emit('agent/session-start', { agent: key, source: 'clear' })
-    ctx.emit('agent/session-start', { agent: key, source: 'compact' })
+    ctx.emit('agent/created', { agent: key, source: 'startup' })
+    ctx.emit('agent/created', { agent: key, source: 'clear' })
+    ctx.emit('agent/created', { agent: key, source: 'compact' })
 
     expect(ctx.tools.schemas(key).filter(t => t.name === 'glob')).toHaveLength(1)
     await scope.dispose()
@@ -120,7 +120,7 @@ describe('better-glob shadow (real ToolRuntime composition)', () => {
     ctx.provide('agents', { list: () => [] })
     apply(ctx, resolveConfig({}))
     const { scope, key } = await mintAgentScope(ctx, 'a')
-    ctx.emit('agent/session-start', { agent: key, source: 'startup' })
+    ctx.emit('agent/created', { agent: key, source: 'startup' })
 
     const schema = ctx.tools.schemas(key).find(t => t.name === 'glob')
     expect(schema).toBeDefined()

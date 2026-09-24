@@ -15,9 +15,9 @@
  *
  * ## Mount points
  *
- * `agent/session-start` fires for every agent (main and subagents) before the
- * first prompt assembly, across startup/resume/clear/compact — each agent
- * gets the shadow exactly once, guarded by a WeakSet. On plugin reload
+ * `agent/created` fires for every entered agent (main and subagents) before the
+ * first prompt assembly, with `source` recording startup/resume/clear/compact —
+ * each agent gets the shadow exactly once, guarded by a WeakMap. On plugin reload
  * (config change), `apply` re-runs on the same module instance: live agents
  * listed from the `agents` registry have their previous shadow disposed and
  * re-registered so the fresh config applies.
@@ -103,10 +103,12 @@ function shadowAgent(agent: Agent, tool: ToolDefinition, section: PromptSection)
 const shadowed = new WeakMap<Agent, () => void>()
 
 /**
- * Register the better-`glob` shadow: a `agent/session-start` listener that
+ * Register the better-`glob` shadow: an `agent/created` listener that
  * mounts the tool and prompt section into every agent's own layer, plus a
  * resync over already-live agents so a config reload takes effect without a
- * restart.
+ * restart. The listener is async and non-re-entrant: DSH awaits serial
+ * `agent/created` dispatch (a rejection would fail agent creation), so it does
+ * no awaiting of its own and a repeat event for the same agent is a no-op.
  * @param ctx - the plugin context; registrations are effects scoped to it.
  * @param config - the (schemastery-defaulted) plugin configuration.
  */
@@ -120,7 +122,7 @@ export function apply(ctx: Context, config: BetterGlobConfig): void {
     shadowed.set(agent, shadowAgent(agent, tool, section))
   }
 
-  ctx.on('agent/session-start', ({ agent }) => {
+  ctx.on('agent/created', async ({ agent }) => {
     shadow(agent)
   })
 

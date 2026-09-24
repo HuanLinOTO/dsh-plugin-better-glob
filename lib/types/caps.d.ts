@@ -4,7 +4,7 @@
  * a `config` block boots.
  * @module @huanlin/dsh-plugin-better-glob/caps
  */
-import z from 'schemastery';
+import z from '@deepseek-ai/schemastery';
 /** Plugin config; every field has a default. */
 export interface BetterGlobConfig {
     /** Bottomless directory NAMES excluded from every search; replaces the built-in default list wholesale (VCS directories are always excluded on top). */
