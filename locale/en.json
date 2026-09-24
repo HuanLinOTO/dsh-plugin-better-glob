@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Better Glob",
+    "description": "Shadow-replaces the built-in glob tool: automatically excludes bottomless directories (node_modules, dist, build, .venv, ...) and requires an explicit include whitelist to search inside them."
+  }
+}

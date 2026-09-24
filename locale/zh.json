@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "增强版 Glob",
+    "description": "以 per-agent 阴影顶替内置 glob 工具：自动排除无底洞目录（node_modules、dist、build、.venv 等），要搜索这些目录必须显式传入 include 白名单。"
+  }
+}

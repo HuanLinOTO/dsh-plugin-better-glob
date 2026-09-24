@@ -1,6 +1,6 @@
 {
   "name": "@huanlin/dsh-plugin-better-glob",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "publishConfig": {
     "access": "public"
   },
@@ -17,10 +17,12 @@
       "types": "./lib/types/index.d.ts",
       "import": "./lib/index.js"
     },
+    "./locale/*.json": "./locale/*.json",
     "./package.json": "./package.json"
   },
   "files": [
     "lib/",
+    "locale/",
     "cordis.patch.yml"
   ],
   "dsh": {
