@@ -7,7 +7,6 @@ import type { SessionId } from '@deepseek-ai/dsh-session'
 import SystemPrompt from '@deepseek-ai/dsh-system-prompt'
 import ToolRuntime from '@deepseek-ai/dsh-tools'
 import type { ToolDefinition } from '@deepseek-ai/dsh-tools'
-import { resolveConfig } from '../src/caps.ts'
 import { apply } from '../src/index.ts'
 
 /** A stand-in for the built-in `glob` registration: same name, same section name, none of the behavior. */
@@ -118,7 +117,7 @@ describe('better-glob shadow (real ToolRuntime composition)', () => {
     const ctx = await mount()
     installBase(ctx)
     ctx.provide('agents', { list: () => [] })
-    apply(ctx, resolveConfig({}))
+    apply(ctx, {})
     const { scope, key } = await mintAgentScope(ctx, 'a')
     ctx.emit('agent/created', { agent: key, source: 'startup' })
 

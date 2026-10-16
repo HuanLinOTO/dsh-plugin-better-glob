@@ -41,6 +41,7 @@
 pnpm install            # pnpm-workspace.yaml 锚定本目录（防止向上并入 D:\Projects 的 workspace）
 pnpm exec node scripts/relink-deps.mjs   # 把 @deepseek-ai/* junction 到 ~/.dsh/source/current 的已构建包（pretest/prebuild 自动跑）
 pnpm run typecheck      # tsc --noEmit（类型经 tsconfig paths 解析 source/current 的 lib/types）
+pnpm run typecheck:tests # 同上门禁，但覆盖 tests/（主 tsconfig 只含 src）
 pnpm test               # vitest：argv/meta 纯逻辑 + 真实 ToolRuntime 组合 preflight
 pnpm run build          # tsdown（lib/index.js）+ tsc（lib/types/*.d.ts）
 ```
@@ -59,7 +60,8 @@ dsh plugin --profile web add "link:D:/Projects/deepseek-harness/dsh-plugin-bette
 ## 检查
 
 - `pnpm run typecheck` — 严格模式类型门禁
-- `pnpm test` — 40 用例：argv 构造（默认排除、include 按段提升、`**` 全提升、VCS 恒排除）、参数与配置校验、meta 投影/收窄、render 页脚；组合 preflight 用真实 `ToolRuntime` + `SystemPrompt` 验证阴影生效、全局视图不受污染、re-fire 幂等、reload resync
+- `pnpm run typecheck:tests` — 同上门禁覆盖 tests/
+- `pnpm test` — 43 用例：argv 构造（默认排除、include 按段提升、`**` 全提升、VCS 恒排除）、参数与配置校验、meta 投影/收窄、render 页脚；组合 preflight 用真实 `ToolRuntime` + `SystemPrompt` 验证阴影生效、全局视图不受污染、re-fire 幂等、reload resync
 - `pnpm run build` — 产物 `lib/index.js`（peer 全 external）+ `lib/types/`
 
 ## 已知限制
