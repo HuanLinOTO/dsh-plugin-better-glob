@@ -39,8 +39,10 @@ import type { BetterGlobCaps, BetterGlobConfig } from './caps.ts';
 export declare const name = "better-glob";
 /**
  * Services required by the plugin: `tools`/`systemPrompt` register the
- * shadow into agent scopes, `subprocess` executes ripgrep, `agents` lists
- * live agents for the reload resync.
+ * shadow into agent scopes, `subprocess` executes ripgrep, `workingDirectory`
+ * resolves the owning agent's working directory (read by the built-in
+ * `runRipgrep` plumbing this tool reuses), `agents` lists live agents for the
+ * reload resync.
  */
 export declare const inject: string[];
 export { Config } from './caps.ts';
